@@ -14,12 +14,13 @@ MR_with_cache.hpp 加了缓存优化的文件读写
 
 database.hpp 基于 B+ 树的数据库
 
-initial.hpp 全局变量（数据库用全局变量存）的定义，初始化
-
 utility.hpp 提供一些实用的内容，包括
 
 - sjtu::pair
 - 字符串的分割，处理
+
+
+initial.cpp 全局变量（数据库用全局变量存）的定义，初始化
 
 user.hpp 用户类的设计以及和用户有关的操作
 
