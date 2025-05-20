@@ -25,4 +25,6 @@ user.hpp 用户类的设计以及和用户有关的操作
 
 train.hpp 火车类的设计以及和火车有关的操作
 
-operator.hpp 对输入进行操作的分类以及一些和用户，火车都有关的操作
+ticket.hpp 与购票有关的操作
+
+operator.hpp 对输入进行不同操作的分类
