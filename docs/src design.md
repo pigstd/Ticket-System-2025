@@ -14,17 +14,18 @@ MR_with_cache.hpp 加了缓存优化的文件读写
 
 database.hpp 基于 B+ 树的数据库
 
-utility.h/cpp 提供一些实用的内容，包括
+utility.hpp 提供一些实用的内容，包括
 
 - sjtu::pair
+- mystr<len> 类：实现定长字符串的处理
 - 字符串的分割，处理
 
-initial.cpp 全局变量（数据库用全局变量存）的定义，初始化
+time.hpp 提供对于时间的处理（日期和时间）
 
-user.h/user.cpp 用户类的设计以及和用户有关的操作
+user.hpp 用户类的设计以及和用户有关的操作
 
-train.h/train.cpp 火车类的设计以及和火车有关的操作
+train.hpp 火车类的设计以及和火车有关的操作
 
-ticket.h/train.cpp 与购票有关的操作
+ticket.hpp 与购票有关的操作
 
-operator.h/operator.cpp 对输入进行不同操作的分类
+operator.hpp 对输入进行不同操作的分类
