@@ -272,6 +272,11 @@ public:
     ~BPTdatabase() {
         file.write_info(rt, 1);
     }
+    // 判断是否为空
+    bool empty() const {
+        // 若根是 -1 则为空，否则不为空
+        return getrt() == -1;
+    }
     void insert(const Key &key, const Value &value) {
         int rt = getrt();
         data _data(key, value);
