@@ -28,4 +28,4 @@ train.hpp 火车类的设计以及和火车有关的操作
 
 ticket.hpp 与购票有关的操作
 
-operator.hpp 对输入进行不同操作的分类
+operator.hpp 对输入进行不同操作的分类，并且返回一个操作类

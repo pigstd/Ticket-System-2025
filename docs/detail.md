@@ -8,7 +8,7 @@ User_Manager 类：用于处理和用户有关的操作
 
 User_Manager 类处理的操作：
 
-add_user, login, login, query_profile, modify_profile
+add_user, login, logout, query_profile, modify_profile
 
 User_Manager 类中应该有两个指针，分别指向的是 `user.dat` 数据库和 `username_to_index` 数据库
 
@@ -47,6 +47,19 @@ date 结构体：维护日期
 time 结构体：维护天/日/分钟
 
 支持从时间的构造函数，支持加法和减法，支持查询每个元素
+
+operator.hpp
+
+首先可以支持对输入的操作的分类，用 `enum` 实现
+
+其次对于每个操作，返回一个操作类
+
+OP 类：
+
+存储一个时间戳 timestamp
+
+存储 26 个 string 与 26 个 bool，表示 -x 对应的字符串是哪个，以及是否存在
+
 
 - 一些应该的宏定义
 
