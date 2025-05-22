@@ -62,9 +62,9 @@ public:
         if (!is_exist[num]) is_exist[num] = 1, value[num] = s;
     }
     // -ch 是否存在
-    bool exist(char ch) {return is_exist[ch - 'a'];}
+    bool exist(char ch) const {return is_exist[ch - 'a'];}
     // -ch 对应的参数
-    string key(char ch) {return value[ch - 'a'];}
+    string key(char ch) const {return value[ch - 'a'];}
 };
 
 #endif //OPERATOR_HPP
