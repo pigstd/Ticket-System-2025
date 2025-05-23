@@ -19,11 +19,11 @@ enum operatortype {
 };
 
 class OP {
-    operatortype type;
     int timestamp;
     string value[26];
     bool is_exist[26];
 public:
+    operatortype type;
     OP() = default;
     OP(const string &cmd) {
         for (int i = 0; i < 26; i++) value[i] = "", is_exist[i] = false;
@@ -65,6 +65,10 @@ public:
     bool exist(char ch) const {return is_exist[ch - 'a'];}
     // -ch 对应的参数
     string key(char ch) const {return value[ch - 'a'];}
+    // 返回时间戳
+    string showtimestamp() const {
+        return "[" + std::to_string(timestamp) + "]";
+    }
 };
 
 #endif //OPERATOR_HPP
