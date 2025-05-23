@@ -28,7 +28,8 @@ public:
     MemoryRiver() = default;
     MemoryRiver(const string& file_name) : file_name(file_name) {}
     // num 初始填入的数字 is_cover 是否强制覆盖
-    void initialise(string FN = "", int num = 0, int is_cover = 1) {
+    // 默认值 num = 0, is_cover = 0 不强制覆盖
+    void initialise(string FN = "", int num = 0, int is_cover = 0) {
         if (FN != "") file_name = FN;
         // 如果存在文件，就不修改，视情况选择是否强制覆盖
         // is_cover = 1 强制覆盖
