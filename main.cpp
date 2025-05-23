@@ -11,7 +11,7 @@ using std::cout;
 int main() {
     MR_with_cache<User, 0> userdat;
     userdat.initialise("user.dat");
-    BPTdatabase<userstr, int> username_to_index("username_to_index.dat");
+    BPTdatabase<userstr, int, 0, 50> username_to_index("username_to_index.dat");
     User_Manager usermanager(&userdat, &username_to_index);
     string in;
     while(std::getline(cin, in)) {

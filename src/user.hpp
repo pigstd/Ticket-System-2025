@@ -56,7 +56,7 @@ public:
 
 class User_Manager {
     MR_with_cache<User, 0> *userdat;
-    BPTdatabase<userstr, int> *username_to_indexdat;
+    BPTdatabase<userstr, int, 0, 50> *username_to_indexdat;
     // 找到 username 对应的 index
     // 若不存在，返回 -1
     int findindex(userstr username) {
@@ -66,7 +66,7 @@ class User_Manager {
     }
 public:
     User_Manager() = delete;
-    User_Manager(MR_with_cache<User, 0> *_userdat, BPTdatabase<userstr, int> *_username_to_indexdat) :
+    User_Manager(MR_with_cache<User, 0> *_userdat, BPTdatabase<userstr, int, 0, 50> *_username_to_indexdat) :
         userdat(_userdat), username_to_indexdat(_username_to_indexdat) {}
     string add_user(const OP &cmd) {
         userstr user_name = cmd.key('u');
