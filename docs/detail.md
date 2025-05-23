@@ -63,11 +63,11 @@ OP 类：
 
 - 一些应该的宏定义
 
-`stationstr` = `trainstr` = `userstr` = `mystr<20>`
+`trainstr` = `userstr` = `mystr<20>`
 
-`namestr` = `mystr<10>`
+`namestr` = `mystr<15>` （一个汉字需要用三个字节）
 
-`pswdstr` = `mailstr` = `mystr<30>`
+`stationstr` = `pswdstr` = `mailstr` = `mystr<30>`
 
 - 存储文件的处理
 
