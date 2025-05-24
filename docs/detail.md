@@ -71,18 +71,18 @@ OP 类：
 
 - 存储文件的处理
 
-类型：`MR_with_cache<User>` 名字 `user.dat` 用途 存储所有用户数据
+类型：`MR_with_cache<User, 0>` 名字 `user.dat` 用途 存储所有用户数据
 
-类型：`BPTdatabase<userstr, int>` 名字 `username_to_index.dat` 用途 存储所有用户名到 index 的映射
+类型：`BPTdatabase<userstr, int, 0, 50>` 名字 `username_to_index.dat` 用途 存储所有用户名到 index 的映射
 
-类型：`MR_with_cache<Train>` 名字 `train.dat` 用途 存储所有火车数据
+类型：`MR_with_cache<Train, 0>` 名字 `train.dat` 用途 存储所有火车数据
 
-类型：`BPTdatabase<trainstr, int>` 名字 `trainid_to_index.dat` 用途 存储所有用户名到 index 的映射
+类型：`BPTdatabase<trainstr, int, 0, 50>` 名字 `trainid_to_index.dat` 用途 存储所有火车名字到 index 的映射
 
-类型：`BPTdatabase<pair<stationstr, stationstr>, int>` 名字： `stationtostation.dat` 用途：存储所有 (s, t) 的路径到 index 的映射
+类型：`BPTdatabase<pair<stationstr, stationstr>, int, 0, 50>` 名字： `stationtostation.dat` 用途：存储所有火车站 (s, t) 的路径到 index 的映射
 
-类型：`MR_with_cache<Order>` 名字 `order.dat` 用途 存储所有订单。由于订单没有删除功能，因此，所有 index 都是递增的
+类型：`MR_with_cache<Order, 0>` 名字 `order.dat` 用途 存储所有订单。由于订单没有删除功能，因此，所有 index 都是递增的
 
-类型：`BPTdatabase<pair<int, date>, int>` 名字 `pendingqueue.dat` 用途：每个列车的 index 和开始日期到所有 pending 的订单 index
+类型：`BPTdatabase<pair<int, date>, int, 0, 50>` 名字 `pendingqueue.dat` 用途：每个列车的 index 和开始日期到所有 pending 的订单 index
 
-类型：`BPTdatabase<int, int>` 名字 `userorder.dat` 用途：每个用户 index 对应的订单的 index
+类型：`BPTdatabase<int, int, 0, 50>` 名字 `userorder.dat` 用途：每个用户 index 对应的订单的 index
