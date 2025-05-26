@@ -5,9 +5,13 @@
 #include "utility.hpp"
 #include "vector.hpp"
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <iterator>
+#include <ostream>
 #include <string>
 using std::string;
-using sjtu::vector;
+// using std::vector;
 
 // 操作的分类
 // 用下划线开头，避免重名
@@ -25,10 +29,11 @@ class OP {
 public:
     operatortype type;
     OP() = default;
-    OP(const string &cmd) {
+    OP(const string &cmd) : timestamp(0) {
+        // std::cerr << cmd << '\n';
         for (int i = 0; i < 26; i++) value[i] = "", is_exist[i] = false;
-        vector<string> op = split_by_ch(cmd, ' ');
-        assert(op.size() > 2 && op.size() % 2 == 0);
+        sjtu::vector<string> op = split_by_ch(cmd, ' ');
+        assert(op.size() >= 2 && op.size() % 2 == 0);
         // [timestamp] = op[0]
         for (int i = 1; i + 1 < op[0].size(); i++) timestamp = timestamp * 10 + op[0][i] - '0';
         // cmd = op[1]
@@ -49,7 +54,7 @@ public:
         else if (op[1] == "clean") type = _clean;
         else if (op[1] == "exit") type = _exit;
         else assert(0); // invalid cmd
-        for (int i = 2; i < op.size(); i++) {
+        for (int i = 2; i < op.size(); i += 2) {
             assert(op[i].size() == 2);
             int num = op[i][1] - 'a';
             value[num] = op[i + 1], is_exist[num] = true;
