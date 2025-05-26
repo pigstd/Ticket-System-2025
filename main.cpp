@@ -37,6 +37,10 @@ int main() {
                 cout << cmd.showtimestamp() << ' ' << usermanager.modify_profile(cmd) << '\n';
                 break;
             }
+            case _exit: {
+                cout << cmd.showtimestamp() << ' ' << "bye" << '\n';
+                return 0;
+            }
             // other case: to do
         }
     }
