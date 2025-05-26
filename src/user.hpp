@@ -7,6 +7,7 @@
 #include "database.hpp"
 #include "vector.hpp"
 #include <cassert>
+#include <iostream>
 #include <string>
 
 using sjtu::vector;
@@ -80,7 +81,7 @@ public:
         int cur_index = findindex(cmd.key('c'));
         if (cur_index == -1) return "-1";
         User cur_user; userdat->read(cur_user, cur_index);
-        if (!cur_user.is_login() || cur_user.privilege <= std::stoi(cmd.key('p')))
+        if (!cur_user.is_login() || cur_user.privilege <= std::stoi(cmd.key('g')))
             return "-1";
         if (findindex(user_name) != -1) return "-1";
         User new_user(user_name, cmd.key('p'), cmd.key('n'), cmd.key('m'), cmd.key('g'));
@@ -113,7 +114,9 @@ public:
         int index = findindex(user_name);
         if (cur_index == -1 || index == -1) return "-1";
         User cur_user, user;
-        userdat->read(cur_user, cur_index), userdat->read(user, index);
+        userdat->read(cur_user, cur_index);
+        if (!cur_user.is_login()) return "-1";
+        userdat->read(user, index);
         if (index == cur_index || cur_user.privilege > user.privilege) return user.query_profile();
         else return "-1";
     }
@@ -124,7 +127,9 @@ public:
         int index = findindex(user_name);
         if (cur_index == -1 || index == -1) return "-1";
         User cur_user, user;
-        userdat->read(cur_user, cur_index), userdat->read(user, index);
+        userdat->read(cur_user, cur_index);
+        if (!cur_user.is_login()) return "-1";
+        userdat->read(user, index);
         if (index != cur_index && cur_user.privilege <= user.privilege) return "-1";
         // 如果修改权限 
         if (cmd.exist('g')) {
@@ -134,7 +139,7 @@ public:
         }
         if (cmd.exist('p')) user.password = cmd.key('p');
         if (cmd.exist('n')) user.name = cmd.key('n');
-        if (cmd.exist('m')) user.name = cmd.key('m');
+        if (cmd.exist('m')) user.mailAddr = cmd.key('m');
         userdat->update(user, index);
         return user.query_profile();
     }
