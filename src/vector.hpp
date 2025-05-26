@@ -1,7 +1,10 @@
-// vector，从 sjtu-STL 中复制，并且删去了抛出异常的部分
 #ifndef SJTU_VECTOR_HPP
 #define SJTU_VECTOR_HPP
 
+// #include "exceptions.hpp"
+
+#include <climits>
+#include <cstddef>
 #include <cstring>
 #include <iostream>
 
@@ -20,8 +23,11 @@ private:
 	// 扩大 Capability
 	void extent() {
 		int newCapability = Capability * 2;
+		if (Capability == 0) newCapability = 1;
 		void *newMemoryData = operator new (newCapability * sizeof(T));
-		memcpy(newMemoryData, MemoryData, Capability * sizeof(T));
+		for (int i = 0; i < Size; i++)
+			new(static_cast<T*>(newMemoryData) + i) T(*(static_cast<T*>(MemoryData) + i)),
+			(static_cast<T*>(MemoryData) + i)->~T();
 		if (MemoryData != nullptr) operator delete(MemoryData);
 		MemoryData = newMemoryData;
 		Capability = newCapability;
@@ -208,10 +214,8 @@ public:
 	 * TODO Constructs
 	 * At least two: default constructor, copy constructor
 	 */
-	vector() : Size(0), Capability(4) {
-		MemoryData = operator new (Capability * sizeof(T));
-	}
-	vector(const vector &other) : Size(other.Size), Capability(other.Capability), MemoryData(nullptr) {
+	vector() : Size(0), Capability(0), MemoryData(nullptr) {}
+	vector(const vector &other) : Size(other.Size), Capability(other.Size), MemoryData(nullptr) {
 		MemoryData = operator new (Capability * sizeof(T));
 		for (int i = 0; i < Size; i++)
 			new (static_cast<T*>(MemoryData) + i) T(other[i]);
@@ -234,7 +238,7 @@ public:
 			this->operator[](i).~T();
 		operator delete(MemoryData);
 
-		Size = other.Size, Capability = other.Capability;
+		Size = other.Size, Capability = other.Size;
 		MemoryData = operator new(sizeof(T) * Capability);
 		for (int i = 0; i < Size; i++)
 			new (static_cast<T*>(MemoryData) + i) T(other[i]);
@@ -305,11 +309,11 @@ public:
 	 */
 	void clear() {
 		for (int i = 0; i < Size; i++)
-		 	this->operator[](i).~T();
+			this->operator[](i).~T();
 		operator delete(MemoryData);
 
-		Size = 0; Capability = 4;
-		MemoryData = operator new(Capability * sizeof(T));
+		MemoryData = nullptr;
+		Size = Capability = 0;
 	}
 	/**
 	 * inserts value at index ind.
@@ -321,14 +325,11 @@ public:
 		// std::cerr << "ins: " << ind << ' ' << Size << '\n';
 		// if (ind > Size) throw index_out_of_bound();
 		if (Size == Capability) extent();
+		new(static_cast<T*>(MemoryData) + Size) T(at(Size - 1));
+		for (int i = Size - 1; i > ind; i--)
+			at(i) = at(i - 1);
 		Size++;
-		if (ind + 1 == Size) {
-			new(static_cast<T*>(MemoryData) + Size) T(value);
-			return iterator(MemoryData, ind);
-		}
-		memmove(reinterpret_cast<T*>(MemoryData) + ind + 1,
-		reinterpret_cast<T*>(MemoryData) + ind, sizeof(T) * (Size - ind - 1));
-		new(static_cast<T*>(MemoryData) + ind) T(value);
+		at(ind) = value;
 		return iterator(MemoryData, ind);
 	}
 	/**
@@ -348,8 +349,8 @@ public:
 	iterator erase(const size_t &ind) {
 		// if (ind >= Size) throw index_out_of_bound();
 		at(ind).~T();
-		memmove(reinterpret_cast<T*>(MemoryData) + ind, 
-		reinterpret_cast<T*>(MemoryData) + ind + 1, sizeof(T) * (Size - ind - 1));
+		for (int i = ind; i + 1 < Size; i++)
+			at(i) = at(i + 1);
 		Size--;
 		return begin() + ind;
 	}
