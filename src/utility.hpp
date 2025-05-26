@@ -115,7 +115,7 @@ inline vector<string> split_by_ch(string s, char ch) {
             if (now != "") res.push_back(now);
             now = "";
         }
-        else now += ch;
+        else now += c;
     }
     if (now != "") res.push_back(now);
     return res;
