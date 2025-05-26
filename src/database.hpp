@@ -273,7 +273,7 @@ public:
         file.write_info(rt, 1);
     }
     // 判断是否为空
-    bool empty() const {
+    bool empty() {
         // 若根是 -1 则为空，否则不为空
         return getrt() == -1;
     }
