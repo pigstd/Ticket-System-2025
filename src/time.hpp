@@ -62,6 +62,10 @@ public:
         for (int i = 1; i < month; i++) res += day_per_month[i];
         return res;
     }
+    // 转换为一个字符串
+    operator string() {
+        return to_string_len2(month) + "-" + to_string_len2(day);
+    }
 };
 
 class Time {
@@ -70,6 +74,8 @@ class Time {
 public:
     int day, hour, minute;
     Time() : day(0), hour(0), minute(0) {}
+    // 从 int 的构造函数：00:mm
+    Time(int mm) : day(0), hour(0), minute(mm) {}
     // hh:mm 的构造函数
     Time(string s) : day(0) {
         auto vec = split_by_ch(s, ':');
@@ -96,6 +102,10 @@ public:
         Time res = *this;
         res -= b;
         return res;
+    }
+    // 转换为一个字符串
+    operator string() {
+        return to_string_len2(hour) + ":" + to_string_len2(minute);
     }
 };
 
