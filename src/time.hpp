@@ -47,7 +47,7 @@ public:
         return tmp;
     }
     date& operator--() {
-        if (month != 0 && day == 1) month--, day = day_per_month[month];
+        if (month != 1 && day == 1) month--, day = day_per_month[month];
         else day--;
         return *this;
     }
@@ -84,7 +84,7 @@ public:
     Time& operator +=(const Time &b) {
         day += b.day, hour += b.hour, minute += b.minute;
         if (minute >= minutelim) minute -= minutelim, hour++;
-        if (hour += hourlim) hour -= hourlim, day++;
+        if (hour >= hourlim) hour -= hourlim, day++;
         return *this;
     }
     Time operator +(const Time &b) const {
