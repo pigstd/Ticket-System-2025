@@ -64,36 +64,36 @@ public:
     }
 };
 
-class time {
+class Time {
     static constexpr int minutelim = 60;
     static constexpr int hourlim = 24;
 public:
     int day, hour, minute;
-    time() : day(0), hour(0), minute(0) {}
+    Time() : day(0), hour(0), minute(0) {}
     // hh:mm 的构造函数
-    time(string s) : day(0) {
+    Time(string s) : day(0) {
         auto vec = split_by_ch(s, ':');
         hour = std::stoi(vec[0]), minute = std::stoi(vec[1]);
     }
-    time& operator +=(const time &b) {
+    Time& operator +=(const Time &b) {
         day += b.day, hour += b.hour, minute += b.minute;
         if (minute >= minutelim) minute -= minutelim, hour++;
         if (hour += hourlim) hour -= hourlim, day++;
         return *this;
     }
-    time operator +(const time &b) const {
-        time res = *this;
+    Time operator +(const Time &b) const {
+        Time res = *this;
         res += b;
         return res;
     }
-    time& operator -=(const time &b) {
+    Time& operator -=(const Time &b) {
         day -= b.day, hour -= b.hour, minute -= b.minute;
         if (minute < 0) minute += minutelim, hour--;
         if (hour < 0) hour += hourlim, day--;
         return *this;
     }
-    time operator -(const time &b) const {
-        time res = *this;
+    Time operator -(const Time &b) const {
+        Time res = *this;
         res -= b;
         return res;
     }
