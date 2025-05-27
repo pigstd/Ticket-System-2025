@@ -24,7 +24,7 @@ Train_Manager 类处理的操作：
 
 add_train, delete_train, release_train, query_train, query_ticket, query_transfer
 
-Train_Manager 类中应该有三个指针，分别指向的是 `train.dat`, `trainid_to_index.dat`, `stationtostation.dat`
+Train_Manager 类中应该有四个指针，分别指向的是 `train.dat`, `trainid_to_index.dat`, `station_to_station.dat`, `station_to_index.dat`
 
 - ticket.hpp
 
@@ -34,7 +34,7 @@ Ticket_Manager 类：用于处理和购票有关的操作
 
 处理的操作：buy_ticket, query_order, refund_ticket
 
-Train_Manager 类中应该有三个指针，分别指向的是 `user.dat`, `train.dat`, `trainid_to_index.dat`, `pendingqueue.dat`, `userorder.dat`
+Train_Manager 类中应该有五个指针，分别指向的是 `user.dat`, `train.dat`, `trainid_to_index.dat`, `pendingqueue.dat`, `userorder.dat`
 
 - time.hpp
 
@@ -79,7 +79,9 @@ OP 类：
 
 类型：`BPTdatabase<trainstr, int, 0, 50>` 名字 `trainid_to_index.dat` 用途 存储所有火车名字到 index 的映射
 
-类型：`BPTdatabase<pair<stationstr, stationstr>, int, 0, 50>` 名字： `stationtostation.dat` 用途：存储所有火车站 (s, t) 的路径到 index 的映射
+类型：`BPTdatabase<pair<stationstr, stationstr>, int, 0, 50>` 名字： `station_to_station.dat` 用途：存储所有火车站 (s, t) 的路径到 index 的映射
+
+类型：`BPTdatabase<stationstr, int, 0, 50>` 名字： `station_to_index.dat` 用途：存储所有包含火车站 s 的火车的 index
 
 类型：`MR_with_cache<Order, 0>` 名字 `order.dat` 用途 存储所有订单。由于订单没有删除功能，因此，所有 index 都是递增的
 
