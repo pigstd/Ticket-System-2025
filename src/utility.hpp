@@ -121,5 +121,14 @@ inline vector<string> split_by_ch(string s, char ch) {
     return res;
 }
 
+// 将 num 转化为两位字符串
+// 保证 0 <= num <= 100
+// 不足的位数补 0
+inline string to_string_len2(int num) {
+    if (num == 0) return "00";
+    else if (num <= 9) return "0" + std::to_string(num);
+    else return std::to_string(num);
+}
+
 
 #endif // UTILITY_HPP
