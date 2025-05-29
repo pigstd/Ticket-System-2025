@@ -163,9 +163,9 @@ public:
         res.push_back(std::to_string(maxseat));
         string S = res[0] + " " + res[1] + " " + res[2] + " " + res[3] + " -> "
         + res[4] + " " + res[5] + " " + res[6] + " " + res[7] + res[8] + '\n';
+        res.push_back(S);
         return res;
     }
-    // TO DO
 };
 
 class Train_Manager {
@@ -222,6 +222,7 @@ public:
         if (train.is_release == true) return "-1";
         train.release(station_to_stationdat, station_to_indexdat, index);
         traindat->update(train, index);
+        return "0";
     }
     string query_train(const OP &cmd) {
         string trainID = cmd.key('i');
@@ -270,9 +271,58 @@ public:
         return res;
     }
     string query_transfer(OP &cmd) {
-        
+        cmd.setdefault('p', "time");
+        date Date       = cmd.key('d');
+        stationstr FROM = cmd.key('s');
+        stationstr TO   = cmd.key('t');
+        string method   = cmd.key('p');
+        pair<pair<pair<int, int>, pair<trainstr, trainstr>>, string> ans;
+        bool is_find = false;
+        auto possibletrain1 = station_to_indexdat->find_with_vector(FROM);
+        for (auto train1index : possibletrain1) {
+            Train train1; traindat->read(train1, train1index);
+            int FROMID = train1.findstation(FROM);
+            for (int j = FROMID + 1; j <= train1.stationNum; j++) {
+                stationstr MIDstation = train1.stations[j];
+                vector<string> info1 = train1.query_ticket(FROMID, j, Date);
+                if (info1.empty()) continue;
+                date FROMdate = info1[2];
+                Time FROMtime = info1[3];
+                date Middate   = info1[5];
+                Time Midtime   = info1[6];
+                int price1  = std::stoi(info1[7]);
+                auto possibletrain2 = station_to_stationdat->find_with_vector({MIDstation, TO});
+                for (auto train2index : possibletrain2) {
+                    if (train2index == train1index) continue;
+                    Train train2; traindat->read(train2, train2index);
+                    vector<string> info2 = train2.query_ticket(
+                        train2.findstation(MIDstation), train2.findstation(TO), 
+                        Middate, Midtime, true);
+                    if (info2.empty()) continue;
+                    date TOdate = info2[5];
+                    Time TOtime = info2[6];
+                    int price2 = std::stoi(info2[7]);
+                    int tottime = calc_time_to_begin(TOdate, TOtime)
+                                - calc_time_to_begin(FROMdate, FROMtime);
+                    int totprice = price1 + price2;
+                    pair<pair<pair<int, int>, pair<trainstr, trainstr>>, string> new_ans;
+                    if (method == "time")
+                        new_ans = {{{tottime, totprice}, 
+                        {train1.trainID, train2.trainID}}, info1[9] + info2[9]};
+                    else
+                        new_ans = {{{totprice, tottime}, 
+                        {train1.trainID, train2.trainID}}, info1[9] + info2[9]};
+                    if (!is_find) {
+                        is_find = true;
+                        ans = new_ans;
+                    }
+                    else if (new_ans < ans) ans = new_ans;
+                }
+            }
+        }
+        if (!is_find) return "0";
+        else return ans.second;
     }
-    // TO DO
 };
 
 #endif //TRAIN_HPP
