@@ -57,13 +57,13 @@ public:
         return tmp;
     }
     // 距离 1 月 1 日的日期
-    operator int() {
+    operator int() const {
         int res = day - 1;
         for (int i = 1; i < month; i++) res += day_per_month[i];
         return res;
     }
     // 转换为一个字符串
-    operator string() {
+    operator string() const {
         return to_string_len2(month) + "-" + to_string_len2(day);
     }
 };
@@ -103,10 +103,20 @@ public:
         res -= b;
         return res;
     }
+    // 转化为 int，表示用分钟表示的时间
+    operator int() const {
+        return day * hourlim * minutelim + hour * minutelim + minute;
+    }
     // 转换为一个字符串
-    operator string() {
+    operator string() const {
         return to_string_len2(hour) + ":" + to_string_len2(minute);
     }
 };
+
+// 计算第 _date 天 _time 时刻到 1 月 1 号 0 点 0 分的时间（返回分数）
+inline int calc_time_to_begin(const date &_date, const Time &_time) {
+    int day = int(_date);
+    return day * 24 * 60 + int(_time);
+}
 
 #endif
