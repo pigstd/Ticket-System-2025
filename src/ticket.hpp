@@ -138,7 +138,7 @@ public:
     }
     string query_order(const OP &cmd)  {
         string username = cmd.key('u');
-        if (login_users->find(username) != login_users->end()) return "-1";
+        if (login_users->find(username) != login_users->end()) return "-1\n";
         int userindex = finduserindex(username);
         auto ordervec = userorderat->find_with_vector(userindex);
         string res = std::to_string(ordervec.size()) +  '\n';

@@ -244,9 +244,9 @@ public:
         string trainID = cmd.key('i');
         date Date      = cmd.key('d');
         int index = findindex(trainID);
-        if (index == -1) return "-1";
+        if (index == -1) return "-1\n";
         Train train; traindat->read(train, index);
-        if (!(train.salebegin <= Date && Date <= train.saleend)) return "-1";
+        if (!(train.salebegin <= Date && Date <= train.saleend)) return "-1\n";
         return train.query_train(Date);
     }
     string query_ticket(OP &cmd) {
@@ -336,7 +336,7 @@ public:
                 }
             }
         }
-        if (!is_find) return "0";
+        if (!is_find) return "0\n";
         else return ans.second;
     }
 };
