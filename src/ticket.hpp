@@ -185,6 +185,7 @@ public:
                 orderdat->update(pending_order, pending_orderindex);
             }
         }
+        return "0";
     }
 };
 
