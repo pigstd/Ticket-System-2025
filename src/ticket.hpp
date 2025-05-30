@@ -79,8 +79,8 @@ public:
     BPTdatabase<userstr, int, 0, 50> *_username_to_indexdat,
     MR_with_cache<Train, 0> *_traindat,
     BPTdatabase<trainstr, int, 0, 50> *_trainid_to_indexdat,
-    BPTdatabase<pair<int, int>, int, 0, 50> *_pendingqueuedat,
     MR_with_cache<Order, 0> *_orderdat,
+    BPTdatabase<pair<int, int>, int, 0, 50> *_pendingqueuedat,
     BPTdatabase<int, int, 0, 50> *_userorderat,
     map<userstr, bool> *_login_users) : userdat(_userdat), traindat(_traindat), username_to_indexdat(_username_to_indexdat), 
     trainid_to_indexdat(_trainid_to_indexdat), orderdat(_orderdat), pendingqueuedat(_pendingqueuedat), userorderat(_userorderat), login_users(_login_users) {}
