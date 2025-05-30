@@ -32,6 +32,12 @@ public:
     bool operator <= (const pair<T1, T2> &b) const {
         return first < b.first || (first == b.first && second <= b.second);
     }
+    bool operator > (const pair<T1, T2> &b) const {
+        return first > b.first || (first == b.first && second > b.second);
+    }
+    bool operator >= (const pair<T1, T2> &b) const {
+        return first > b.first || (first == b.first && second >= b.second);
+    }
     bool operator == (const pair<T1, T2> &b) const {
         return first == b.first && second == b.second;
     }

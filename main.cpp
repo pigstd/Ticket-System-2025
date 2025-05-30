@@ -88,7 +88,7 @@ int main() {
                 break;
             }
             case _refund_ticket: {
-                cout << cmd.showtimestamp() << ' ' << ticketmanager.refund_ticket(cmd);
+                cout << cmd.showtimestamp() << ' ' << ticketmanager.refund_ticket(cmd) << '\n';
                 break;
             }
             case _clean: {

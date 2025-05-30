@@ -10,6 +10,7 @@
 #include "vector.hpp"
 #include <cassert>
 #include <functional>
+#include <iostream>
 #include <string>
 
 using std::string;
@@ -96,6 +97,8 @@ public:
             if (i != stationNum) res += std::to_string(remain_seat[dayindex][i]);
             else res += "x";
             res += '\n';
+            if (i != stationNum) nowtime += travelTimes[i];
+            while(nowtime.day != 0) nowtime.day--, Date++;
         }
         return res;
     }
@@ -166,7 +169,7 @@ public:
         res.push_back(std::to_string(sumprice));
         res.push_back(std::to_string(maxseat));
         string S = res[0] + " " + res[1] + " " + res[2] + " " + res[3] + " -> "
-        + res[4] + " " + res[5] + " " + res[6] + " " + res[7] + res[8] + '\n';
+        + res[4] + " " + res[5] + " " + res[6] + " " + res[7] + " " + res[8] + '\n';
         res.push_back(S);
         res.push_back(std::to_string(dayid));
         return res;
@@ -257,8 +260,8 @@ public:
         string method   = cmd.key('p');
         auto trainindex = station_to_stationdat->find_with_vector({FROM, TO});
         // 用于排序的优先队列
-        priority_queue<pair<pair<int, trainstr>, string>,
-            std::greater<pair<pair<int, trainstr>, string>>> Q;
+        priority_queue<pair<pair<int, string>, string>,
+            std::greater<pair<pair<int, string>, string>>> Q;
         for (auto index : trainindex) {
             Train train; traindat->read(train, index);
             int FROMID = train.findstation(FROM);

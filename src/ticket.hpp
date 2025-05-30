@@ -7,6 +7,8 @@
 #include "time.hpp"
 #include "train.hpp"
 #include "user.hpp"
+#include <iostream>
+#include <math.h>
 #include <string>
 class Ticket_Manager;
 
@@ -36,13 +38,13 @@ public:
         string res = "";
         switch (status) {
             case SUCCESS:
-                res = "[SUCCESS]";
+                res = "[success]";
                 break;
             case PENDING:
-                res = "[PENDING]";
+                res = "[pending]";
                 break;
             case REFUNDED:
-                res = "[REFUNDED]";
+                res = "[refunded]";
                 break;
         }
         res += ' ' + string(trainID) + ' ' + string(FROM) + ' ' + string(FROMdate) + ' ' + string(FROMtime)
@@ -101,6 +103,9 @@ public:
         Train train; traindat->read(train, trainindex);
         if (!train.is_release) return "-1";
         // 以上：找到了对应的用户和火车
+        // 如果票数大于火车的总票数，返回 -1
+        int buynum    = std::stoi(num_str);
+        if (train.seatNum < buynum) return "-1";
         int FROMID = train.findstation(FROM);
         int TOID   = train.findstation(TO);
         if (TOID <= FROMID || TOID == -1 || FROMID == -1) return "-1";
@@ -112,7 +117,6 @@ public:
         Time TOtime   = info[6];
         int totprice  = std::stoi(info[7]);
         int max_seat  = std::stoi(info[8]);
-        int buynum    = std::stoi(num_str);
         int dayid     = std::stoi(info[10]);
         Order order(username, trainID, dayid, FROM, TO, FROMdate,
             TOdate, FROMtime, TOtime, totprice, buynum, trainindex);
@@ -138,11 +142,13 @@ public:
     }
     string query_order(const OP &cmd)  {
         string username = cmd.key('u');
-        if (login_users->find(username) != login_users->end()) return "-1\n";
+        if (login_users->find(username) == login_users->end()) return "-1\n";
         int userindex = finduserindex(username);
         auto ordervec = userorderat->find_with_vector(userindex);
         string res = std::to_string(ordervec.size()) +  '\n';
-        for (auto orderindex : ordervec) {
+        // 需要反着来
+        for (int i = (int)(ordervec.size()) - 1; i >= 0; i--) {
+            int orderindex = ordervec[i];
             Order order; orderdat->read(order, orderindex);
             res += order.query();
         }
@@ -152,24 +158,33 @@ public:
         cmd.setdefault('n', "1");
         string username = cmd.key('u');
         int num = std::stoi(cmd.key('n'));
-        if (login_users->find(username) != login_users->end()) return "-1";
+        if (login_users->find(username) == login_users->end()) return "-1";
         int userindex = finduserindex(username);
         // 先找到对应的那个订单
         auto ordervec = userorderat->find_with_vector(userindex);
         if (ordervec.size() < num) return "-1";
-        int refund_orderinex = ordervec[num - 1];
+        int refund_orderinex = ordervec[ordervec.size() - num];
         Order refund_order; orderdat->read(refund_order, refund_orderinex);
-        if (refund_order.status != Order::SUCCESS) return "-1";
-        // 成功退款
+        if (refund_order.status == Order::REFUNDED) return "-1";
+        if (refund_order.status == Order::PENDING) {
+            // 退款在 pending 的 order
+            refund_order.set_satue(Order::REFUNDED);
+            orderdat->update(refund_order, refund_orderinex);
+            pendingqueuedat->del({refund_order.trainindex, refund_order.dayid}, refund_orderinex);
+            return "0";
+        }
+        // status == SUCCESS
+        // 退款已经 SUCCESS 的 order
         refund_order.set_satue(Order::REFUNDED);
         orderdat->update(refund_order, refund_orderinex);
         int trainindex = refund_order.trainindex;
-        Train train; traindat->update(train, trainindex);
+        Train train; traindat->read(train, trainindex);
         int dayid  = refund_order.dayid;
         int FROMID = train.findstation(refund_order.FROM);
         int TOID   = train.findstation(refund_order.TO);
-        // 相当于买 -num 张票
-        train.buy(dayid, -num, FROMID, TOID);
+        int refund_num = refund_order.buy_num;
+        // 相当于买 -refund_num 张票
+        train.buy(dayid, -refund_num, FROMID, TOID);
         // 接下来检查候补队列
         auto pendingque = pendingqueuedat->find_with_vector({trainindex, dayid});
         for (auto pending_orderindex : pendingque) {
@@ -185,6 +200,7 @@ public:
                 orderdat->update(pending_order, pending_orderindex);
             }
         }
+        traindat->update(train, trainindex);
         return "0";
     }
 };

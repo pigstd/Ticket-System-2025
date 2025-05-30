@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cd build
+
+cmake .. && make
+
+cd ..
+
 if [ $# -eq 0 ]; then
   echo "Usage: $0 <testcase_group_name>"
   echo "Available testcase groups from config.json:"

@@ -2,6 +2,7 @@
 #define TIME_HPP
 
 #include "utility.hpp"
+#include <cassert>
 #include <string>
 
 using std::string;
@@ -71,15 +72,29 @@ public:
 class Time {
     static constexpr int minutelim = 60;
     static constexpr int hourlim = 24;
+    void check_valid() {
+        assert(hour >= 0 && hour < hourlim && minute >= 0 && minute < minutelim);
+    }
 public:
     int day, hour, minute;
     Time() : day(0), hour(0), minute(0) {}
     // 从 int 的构造函数：00:mm
-    Time(int mm) : day(0), hour(0), minute(mm) {}
+    Time(int mm) : day(0), hour(0), minute(mm) {
+        // mm 可能比较大
+        if (minute >= minutelim) {
+            hour = minute / minutelim;
+            minute -= hour * minutelim;
+            if (hour >= hourlim) {
+                day = hour / hourlim;
+                hour -= day * hourlim;
+            }
+        }
+    }
     // hh:mm 的构造函数
     Time(string s) : day(0) {
         auto vec = split_by_ch(s, ':');
         hour = std::stoi(vec[0]), minute = std::stoi(vec[1]);
+        check_valid();
     }
     Time& operator +=(const Time &b) {
         day += b.day, hour += b.hour, minute += b.minute;
