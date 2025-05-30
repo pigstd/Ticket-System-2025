@@ -21,10 +21,13 @@ typedef mystr<15> namestr;
 typedef mystr<30> pswdstr;
 typedef mystr<30> mailstr;
 
+
+class Ticket_Manager;
 class User_Manager;
 
 class User {
-friend class User_Manager;
+    friend class User_Manager;
+    friend class Ticket_Manager;
     userstr username;
     pswdstr password;
     namestr name;
@@ -47,7 +50,7 @@ public:
 class User_Manager {
     MR_with_cache<User, 0> *userdat;
     BPTdatabase<userstr, int, 0, 50> *username_to_indexdat;
-    map<userstr, bool> login_users;
+    map<userstr, bool> *login_users;
     // 找到 username 对应的 index
     // 若不存在，返回 -1
     int findindex(userstr username) {
@@ -57,8 +60,9 @@ class User_Manager {
     }
 public:
     User_Manager() = delete;
-    User_Manager(MR_with_cache<User, 0> *_userdat, BPTdatabase<userstr, int, 0, 50> *_username_to_indexdat) :
-        userdat(_userdat), username_to_indexdat(_username_to_indexdat) {}
+    User_Manager(MR_with_cache<User, 0> *_userdat, BPTdatabase<userstr, int, 0, 50> *_username_to_indexdat,
+                map<userstr, bool> *_login_users) :
+        userdat(_userdat), username_to_indexdat(_username_to_indexdat), login_users(_login_users) {}
     string add_user(const OP &cmd) {
         userstr user_name = cmd.key('u');
         // 第一个用户
@@ -71,7 +75,7 @@ public:
         int cur_index = findindex(cmd.key('c'));
         if (cur_index == -1) return "-1";
         User cur_user; userdat->read(cur_user, cur_index);
-        if (login_users.find(cmd.key('c')) == login_users.end() || cur_user.privilege <= std::stoi(cmd.key('g')))
+        if (login_users->find(cmd.key('c')) == login_users->end() || cur_user.privilege <= std::stoi(cmd.key('g')))
             return "-1";
         if (findindex(user_name) != -1) return "-1";
         User new_user(user_name, cmd.key('p'), cmd.key('n'), cmd.key('m'), cmd.key('g'));
@@ -84,14 +88,14 @@ public:
         int index = findindex(user_name);
         if (index == -1) return "-1";
         User user; userdat->read(user, index);
-        if (login_users.find(user_name) != login_users.end() || !user.checkpswd(cmd.key('p'))) return "-1";
-        login_users[user_name] = 1;
+        if (login_users->find(user_name) != login_users->end() || !user.checkpswd(cmd.key('p'))) return "-1";
+        (*login_users)[user_name] = 1;
         return "0";
     }
     string logout(const OP &cmd) {
         userstr user_name = cmd.key('u');
-        if (login_users.find(user_name) == login_users.end()) return "-1";
-        login_users.erase(login_users.find(user_name));
+        if (login_users->find(user_name) == login_users->end()) return "-1";
+        login_users->erase(login_users->find(user_name));
         return "0";
     }
     string query_profile(const OP &cmd) {
@@ -102,7 +106,7 @@ public:
         if (cur_index == -1 || index == -1) return "-1";
         User cur_user, user;
         userdat->read(cur_user, cur_index);
-        if (login_users.find(cur_username) == login_users.end()) return "-1";
+        if (login_users->find(cur_username) == login_users->end()) return "-1";
         userdat->read(user, index);
         if (index == cur_index || cur_user.privilege > user.privilege) return user.query_profile();
         else return "-1";
@@ -115,7 +119,7 @@ public:
         if (cur_index == -1 || index == -1) return "-1";
         User cur_user, user;
         userdat->read(cur_user, cur_index);
-        if (login_users.find(cur_username) == login_users.end()) return "-1";
+        if (login_users->find(cur_username) == login_users->end()) return "-1";
         userdat->read(user, index);
         if (index != cur_index && cur_user.privilege <= user.privilege) return "-1";
         // 如果修改权限 
