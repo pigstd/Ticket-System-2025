@@ -20,10 +20,12 @@ using sjtu::priority_queue;
 typedef mystr<20> trainstr;
 typedef mystr<30> stationstr;
 
+class Ticket_Manager;
 class Train_Manager;
 
 class Train {
     friend class Train_Manager;
+    friend class Ticket_Manager;
     static constexpr int STATION_MAX= 105;
     static constexpr int DAY_MAX = 100;
     trainstr trainID;
@@ -114,7 +116,9 @@ public:
     
     返回的 vector : <trainID> <FROM> <LEAVING_TIME> -> <TO> <ARRIVING_TIME> <PRICE> <SEAT>
     
-    如果这辆车时间不满足，返回空的 vector，否则 vector 返回的分别是上述的 9 个参数（LEAVING_TIME 分为日期和时间）以及最后的总的字符串
+    如果这辆车时间不满足，返回空的 vector，否则 vector 返回的分别是上述的 9 个参数（LEAVING_TIME 分为日期和时间）
+    
+    此外，再加上最后的总的字符串以及该趟火车的 dayid
     */
     vector<string> query_ticket(int FROMID, int TOID, date nowDate, Time starttime = Time(), bool can_wait = false) {
         assert(1 <= FROMID && FROMID < TOID && TOID <= stationNum);
@@ -164,7 +168,19 @@ public:
         string S = res[0] + " " + res[1] + " " + res[2] + " " + res[3] + " -> "
         + res[4] + " " + res[5] + " " + res[6] + " " + res[7] + res[8] + '\n';
         res.push_back(S);
+        res.push_back(std::to_string(dayid));
         return res;
+    }
+    // 购买第 dayid 天，从 FROMID 到 TOID 的票 num 张
+    void buy(int dayid, int num, int FROMID, int TOID) {
+        for (int i = FROMID; i < TOID; i++)
+            remain_seat[dayid][i] -= num;
+    }
+    // 判断第 dayid 天是否可以买从 FROMID 到 TOID 的票 num 张
+    bool can_buy(int dayid, int num, int FROMID, int TOID) {
+        for (int i = FROMID; i < TOID; i++)
+            if (remain_seat[dayid][i] < num) return false;
+        return true;
     }
 };
 
