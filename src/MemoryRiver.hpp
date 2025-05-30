@@ -5,6 +5,7 @@
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include <string>
 // #include <map>
 
 using std::string;
@@ -120,6 +121,9 @@ public:
         file.seekp(index, std::ios::beg);
         file.write(reinterpret_cast<char *>(&head), sizeof(int));
         file.close();
+    }
+    void clear(string FN, int num = 0) {
+        initialise(FN, num, 1);
     }
     ~MemoryRiver() {
         file.open(file_name, std::ios::out | std::ios::in);

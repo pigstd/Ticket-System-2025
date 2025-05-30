@@ -10,6 +10,7 @@
 #include <cassert>
 #include <iostream>
 #include <iterator>
+#include <string>
 using sjtu::vector;
 
 template <typename Key, typename Value, int is_cover = 0, int MAXB = 4>
@@ -88,6 +89,7 @@ class BPTdatabase {
             size--;
         }
     };
+    string filename;
     // 从根到节点的指针的 vector
     vector<int> vecptr;
     // 从根到节点的 tree
@@ -265,7 +267,7 @@ class BPTdatabase {
         }
     }
 public:
-    BPTdatabase(string filename = "") {
+    BPTdatabase(string filename = "") : filename(filename) {
         file.initialise(filename, -1, is_cover);
         file.get_info(rt, 1);
     }
@@ -463,6 +465,11 @@ public:
     void print_tree() {
         int rt = getrt();
         print_tree(rt);
+    }
+    // 删除整个 B+ 树
+    void clear() {
+        rt = -1;
+        file.clear(filename, -1);
     }
 };
 

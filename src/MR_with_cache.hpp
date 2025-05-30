@@ -76,6 +76,10 @@ public:
             MR.Delete(index);
         }
     }
+    void clear(string FN, int num = 0) {
+        while (Buffer.size()) buffer_popend();
+        MR.clear(FN, num);
+    }
 };
 
 #endif
