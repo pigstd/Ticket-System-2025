@@ -34,7 +34,7 @@ Ticket_Manager 类：用于处理和购票有关的操作
 
 处理的操作：buy_ticket, query_order, refund_ticket
 
-Train_Manager 类中应该有五个指针，分别指向的是 `user.dat`, `train.dat`, `trainid_to_index.dat`, `pendingqueue.dat`, `userorder.dat`
+Train_Manager 类中应该有七个指针，分别指向的是 `user.dat`, `username_to_index.dat`, `train.dat`, `trainid_to_index.dat`, `order.dat`, `pendingqueue.dat`, `userorder.dat`
 
 - time.hpp
 
@@ -85,6 +85,6 @@ OP 类：
 
 类型：`MR_with_cache<Order, 0>` 名字 `order.dat` 用途 存储所有订单。由于订单没有删除功能，因此，所有 index 都是递增的
 
-类型：`BPTdatabase<pair<int, date>, int, 0, 50>` 名字 `pendingqueue.dat` 用途：每个列车的 index 和开始日期到所有 pending 的订单 index
+类型：`BPTdatabase<pair<int, int>, int, 0, 50>` 名字 `pendingqueue.dat` 用途：每个列车的 index 和 dayid 到所有 pending 的订单 index 的映射
 
 类型：`BPTdatabase<int, int, 0, 50>` 名字 `userorder.dat` 用途：每个用户 index 对应的订单的 index
